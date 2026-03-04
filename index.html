@@ -23,7 +23,7 @@
             textarea { border: none; resize: none; overflow: hidden; }
         }
     </style>
-    <!-- Chosen Palette: Warm Neutrals with Teal/Rose Accents -->
+<!-- Chosen Palette: Warm Neutrals with Teal/Rose Accents -->
     <!-- Application Structure Plan: Lineares Lernmodul. 1. Theorie & Video, 2. Interaktive Grafik (Schmetterling), 3. Quiz zur Überprüfung, 4. Cornell-Zusammenfassung mit PDF Export. -->
     <!-- Visualization & Content Choices: Chart.js für die Pyramide (Standard für demografische Daten, interaktiv on hover). Vanilla JS für Quiz. html2pdf für den Export. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
@@ -97,45 +97,60 @@
 
         <!-- 3. QUIZ -->
         <section id="quiz" class="scroll-mt-20 no-print">
-            <div class="mb-6">
+              <div class="mb-6">
                 <h2 class="text-3xl font-semibold text-teal-800 border-b-2 border-teal-200 pb-2 inline-block">3. Wissensüberprüfung</h2>
                 <p class="mt-4 text-lg">Testen Sie Ihr Verständnis der Grafik mit diesen 5 Fragen.</p>
             </div>
 
             <div class="bg-white p-6 rounded-lg shadow-sm space-y-6" id="quiz-container">
                 <div class="quiz-question" data-correct="c">
-                    <p class="font-medium text-lg mb-2">1. Welche Altersgruppe ist gemäss der Grafik bei den Frauen (rechts) am stärksten vertreten?</p>
+                    <p class="font-medium text-lg mb-2 question-text">1. Welche Altersgruppe ist gemäss der Grafik bei den Frauen (rechts) am stärksten vertreten?</p>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q1" value="a" class="mr-2"> 0-4 Jahre</label>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q1" value="b" class="mr-2"> 20-24 Jahre</label>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q1" value="c" class="mr-2"> 50-59 Jahre (Babyboomer)</label>
+                    <div class="explanation hidden mt-3 p-3 bg-blue-50 border border-blue-200 text-blue-800 rounded text-sm">
+                        <strong>Korrektur:</strong> Die richtige Antwort ist <strong>c) 50-59 Jahre (Babyboomer)</strong>. In der Grafik sieht man, dass in diesem Altersbereich die Balken auf der rechten Seite am weitesten nach aussen ragen.
+                    </div>
                 </div>
 
                 <div class="quiz-question" data-correct="b">
-                    <p class="font-medium text-lg mb-2">2. Warum reicht die Grafik auf der rechten Seite (Frauen) bei den über 80-Jährigen weiter nach aussen als auf der linken Seite (Männer)?</p>
+                    <p class="font-medium text-lg mb-2 question-text">2. Warum reicht die Grafik auf der rechten Seite (Frauen) bei den über 80-Jährigen weiter nach aussen als auf der linken Seite (Männer)?</p>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q2" value="a" class="mr-2"> Weil mehr Frauen in die Schweiz einwandern.</label>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q2" value="b" class="mr-2"> Weil Frauen statistisch gesehen eine höhere Lebenserwartung haben.</label>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q2" value="c" class="mr-2"> Das ist ein Darstellungsfehler in der Grafik.</label>
+                    <div class="explanation hidden mt-3 p-3 bg-blue-50 border border-blue-200 text-blue-800 rounded text-sm">
+                        <strong>Korrektur:</strong> Die richtige Antwort ist <strong>b)</strong>. Aufgrund der höheren Lebenserwartung von Frauen gibt es in den höchsten Altersklassen (Spitze der Grafik) deutlich mehr Frauen als Männer.
+                    </div>
                 </div>
 
                 <div class="quiz-question" data-correct="a">
-                    <p class="font-medium text-lg mb-2">3. Was lässt sich aus der Basis (Altersgruppen 0-14) im Vergleich zur Mitte der Grafik ablesen?</p>
+                    <p class="font-medium text-lg mb-2 question-text">3. Was lässt sich aus der Basis (Altersgruppen 0-14) im Vergleich zur Mitte der Grafik ablesen?</p>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q3" value="a" class="mr-2"> Die Geburtenraten sind niedriger als vor 50 Jahren.</label>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q3" value="b" class="mr-2"> Die Bevölkerung wächst derzeit rasant.</label>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q3" value="c" class="mr-2"> Es gibt extrem hohe Kindersterblichkeit.</label>
+                    <div class="explanation hidden mt-3 p-3 bg-blue-50 border border-blue-200 text-blue-800 rounded text-sm">
+                        <strong>Korrektur:</strong> Die richtige Antwort ist <strong>a)</strong>. Die schmale Basis (unten) verglichen mit dem breiten Bauch (Mitte) zeigt, dass heute deutlich weniger Kinder geboren werden als zur Zeit der "Babyboomer".
+                    </div>
                 </div>
 
                 <div class="quiz-question" data-correct="b">
-                    <p class="font-medium text-lg mb-2">4. Welcher Grundform entspricht die aktuelle Schweizer Bevölkerungsgrafik am ehesten?</p>
+                    <p class="font-medium text-lg mb-2 question-text">4. Welcher Grundform entspricht die aktuelle Schweizer Bevölkerungsgrafik am ehesten?</p>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q4" value="a" class="mr-2"> Klassische Pyramide (breite Basis, spitze Kuppe)</label>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q4" value="b" class="mr-2"> Urne / Schmetterling (schmale Basis, dicker Bauch)</label>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q4" value="c" class="mr-2"> Rechteck / Säule (alle Altersgruppen gleich stark)</label>
+                    <div class="explanation hidden mt-3 p-3 bg-blue-50 border border-blue-200 text-blue-800 rounded text-sm">
+                        <strong>Korrektur:</strong> Die richtige Antwort ist <strong>b) Urne / Schmetterling</strong>. Die Grafik ist unten schmal (wenig Geburten) und in der Mitte bauchig (viele Personen mittleren Alters), was der Form einer Urne entspricht.
+                    </div>
                 </div>
 
                 <div class="quiz-question" data-correct="a">
-                    <p class="font-medium text-lg mb-2">5. Wie hoch ist ungefähr die Anzahl der 50-54-jährigen Männer in dieser Grafik?</p>
+                    <p class="font-medium text-lg mb-2 question-text">5. Wie hoch ist ungefähr die Anzahl der 50-54-jährigen Männer in dieser Grafik?</p>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q5" value="a" class="mr-2"> ca. 320'000</label>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q5" value="b" class="mr-2"> ca. 150'000</label>
                     <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q5" value="c" class="mr-2"> ca. 500'000</label>
+                    <div class="explanation hidden mt-3 p-3 bg-blue-50 border border-blue-200 text-blue-800 rounded text-sm">
+                        <strong>Korrektur:</strong> Die richtige Antwort ist <strong>a) ca. 320'000</strong>. Wenn Sie mit der Maus über den blauen Balken der Altersgruppe 50-54 fahren, wird Ihnen der Wert von 320 (in Tausend) angezeigt.
+                    </div>
                 </div>
 
                 <button id="check-quiz" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded transition">Antworten überprüfen</button>
@@ -147,15 +162,15 @@
         <section id="zusammenfassung" class="scroll-mt-20 pb-12">
             <div class="mb-6 flex justify-between items-end no-print">
                 <div>
-                    <h2 class="text-3xl font-semibold text-teal-800 border-b-2 border-teal-200 pb-2 inline-block">4. Cornell Zusammenfassung</h2>
-                    <p class="mt-4 text-lg">Nutzen Sie diese Struktur, um die wichtigsten Erkenntnisse aus Video, Text und Grafik zu notieren.</p>
+                    <h2 class="text-3xl font-semibold text-teal-800 border-b-2 border-teal-200 pb-2 inline-block">4. Zusammenfassung & Export</h2>
+                    <p class="mt-4 text-lg">Nutzen Sie diese Struktur für Ihre Notizen. Beim Klick auf den Button werden Ihre Notizen <strong>und Ihre Quiz-Ergebnisse</strong> als PDF gespeichert.</p>
                 </div>
                 <button id="export-pdf" class="bg-stone-800 hover:bg-stone-900 text-white font-bold py-2 px-4 rounded transition shadow flex items-center">
-                    <span class="mr-2 text-xl">📄</span> Als PDF exportieren
+                    <span class="mr-2 text-xl">📄</span> Auswertung als PDF exportieren
                 </button>
             </div>
 
-            <div id="cornell-container" class="cornell-grid">
+            <div id="cornell-container" class="cornell-grid no-print">
                 <div class="cornell-header flex justify-between">
                     <div><strong>Thema:</strong> Demografie Schweiz</div>
                     <div><strong>Datum:</strong> <span id="current-date"></span></div>
@@ -163,17 +178,17 @@
                 
                 <div class="cornell-cues">
                     <label class="block font-semibold mb-2 text-stone-600 uppercase text-sm">Stichworte / Fragen</label>
-                    <textarea class="h-64 border-none bg-stone-50" placeholder="Hauptbegriffe, Leitfragen, Vokabeln..."></textarea>
+                    <textarea id="input-cues" class="h-64 bg-stone-50" placeholder="Hauptbegriffe, Leitfragen..."></textarea>
                 </div>
                 
                 <div class="cornell-notes">
                     <label class="block font-semibold mb-2 text-stone-600 uppercase text-sm">Notizen</label>
-                    <textarea class="h-64 border-none bg-stone-50" placeholder="Details aus Video und Text, Erklärungen zur Grafik..."></textarea>
+                    <textarea id="input-notes" class="h-64 bg-stone-50" placeholder="Details aus Video, Text und Grafik..."></textarea>
                 </div>
                 
                 <div class="cornell-summary">
                     <label class="block font-semibold mb-2 text-stone-600 uppercase text-sm">Zusammenfassung</label>
-                    <textarea class="h-32 border-none bg-stone-50" placeholder="Fassen Sie die wichtigsten Erkenntnisse in 2-3 Sätzen zusammen..."></textarea>
+                    <textarea id="input-summary" class="h-32 bg-stone-50" placeholder="Fassen Sie die Erkenntnisse in 2-3 Sätzen zusammen..."></textarea>
                 </div>
             </div>
         </section>
@@ -268,56 +283,144 @@
         });
 
         // --- 2. Quiz Logik ---
+                let quizStatus = { completed: false, score: 0, details: [] };
+
         document.getElementById('check-quiz').addEventListener('click', function() {
             const questions = document.querySelectorAll('.quiz-question');
-            let score = 0;
+            quizStatus.score = 0;
+            quizStatus.details = [];
+            quizStatus.completed = true;
             
             questions.forEach((q, index) => {
                 const selected = q.querySelector('input[type="radio"]:checked');
                 const correctVal = q.getAttribute('data-correct');
+                const explanationDiv = q.querySelector('.explanation');
+                const questionText = q.querySelector('.question-text').innerText;
+                
+                let isCorrect = false;
                 
                 // Reset styling
                 q.classList.remove('bg-green-50', 'bg-red-50', 'border-l-4', 'border-green-500', 'border-red-500');
+                explanationDiv.classList.add('hidden');
                 
-                if (selected) {
-                    if (selected.value === correctVal) {
-                        score++;
-                        q.classList.add('bg-green-50', 'border-l-4', 'border-green-500');
-                    } else {
-                        q.classList.add('bg-red-50', 'border-l-4', 'border-red-500');
-                    }
+                if (selected && selected.value === correctVal) {
+                    isCorrect = true;
+                    quizStatus.score++;
+                    q.classList.add('bg-green-50', 'border-l-4', 'border-green-500');
                 } else {
-                    // Keine Antwort gegeben
+                    // Zeige Erklärung bei falscher oder fehlender Antwort
                     q.classList.add('bg-red-50', 'border-l-4', 'border-red-500');
+                    explanationDiv.classList.remove('hidden');
                 }
+
+                // Speichere Resultat für PDF Export
+                quizStatus.details.push({
+                    question: questionText,
+                    isCorrect: isCorrect,
+                    explanationText: explanationDiv.innerHTML // Speichert die Erklärung inkl. <strong> Tags
+                });
             });
 
             const resultDiv = document.getElementById('quiz-result');
             resultDiv.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
             
-            if (score === 5) {
-                resultDiv.textContent = `Perfekt! ${score} von 5 Fragen richtig beantwortet.`;
+            if (quizStatus.score === 5) {
+                resultDiv.textContent = `Perfekt! ${quizStatus.score} von 5 Fragen richtig beantwortet.`;
                 resultDiv.classList.add('bg-green-100', 'text-green-800');
             } else {
-                resultDiv.textContent = `Sie haben ${score} von 5 Fragen richtig. Überprüfen Sie die rot markierten Antworten.`;
+                resultDiv.textContent = `Sie haben ${quizStatus.score} von 5 Fragen richtig. Lesen Sie sich die blauen Boxen durch, um die Fehler zu verstehen.`;
                 resultDiv.classList.add('bg-red-100', 'text-red-800');
             }
         });
 
-        // --- 3. Cornell Export & Datum ---
+        // --- 3. Intelligenter PDF Export (Verhindert leere Seiten) ---
         document.getElementById('current-date').textContent = new Date().toLocaleDateString('de-CH');
 
         document.getElementById('export-pdf').addEventListener('click', function() {
-            const element = document.getElementById('cornell-container');
+            // Text aus Textfeldern holen und Zeilenumbrüche für HTML vorbereiten
+            const cuesText = document.getElementById('input-cues').value.replace(/\n/g, '<br>');
+            const notesText = document.getElementById('input-notes').value.replace(/\n/g, '<br>');
+            const summaryText = document.getElementById('input-summary').value.replace(/\n/g, '<br>');
+
+            // 1. Versteckten "Druck-Container" erstellen, damit html2pdf es fehlerfrei lesen kann
+            const printArea = document.createElement('div');
+            printArea.style.position = 'absolute';
+            printArea.style.left = '-9999px';
+            printArea.style.top = '0';
+            printArea.style.width = '800px'; 
+            printArea.style.padding = '40px';
+            printArea.style.backgroundColor = 'white';
+            printArea.style.fontFamily = 'sans-serif';
+            printArea.style.color = '#292524';
+
+            // 2. Dokument-Kopf
+            let htmlContent = `
+                <h1 style="font-size: 24px; color: #0f766e; border-bottom: 2px solid #5eead4; padding-bottom: 10px; margin-bottom: 20px;">Lernauswertung: Demografie Schweiz</h1>
+                <p style="margin-bottom: 30px;"><strong>Erstellungsdatum:</strong> ${new Date().toLocaleDateString('de-CH')}</p>
+            `;
+
+            // 3. Quiz Resultate hinzufügen
+            htmlContent += `<h2 style="font-size: 18px; color: #0f766e; margin-bottom: 15px;">1. Quiz Resultate (${quizStatus.completed ? quizStatus.score + ' von 5 Punkten' : 'Nicht absolviert'})</h2>`;
+            
+            if (quizStatus.completed) {
+                quizStatus.details.forEach((q, i) => {
+                    const bgColor = q.isCorrect ? '#f0fdf4' : '#fef2f2';
+                    const borderColor = q.isCorrect ? '#22c55e' : '#ef4444';
+                    const statusText = q.isCorrect ? '<span style="color: #166534; font-weight: bold;">Richtig</span>' : '<span style="color: #991b1b; font-weight: bold;">Falsch</span>';
+                    
+                    htmlContent += `
+                        <div style="background-color: ${bgColor}; border-left: 4px solid ${borderColor}; padding: 12px; margin-bottom: 10px; border-radius: 4px;">
+                            <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Frage ${i+1}:</strong> ${q.question}</p>
+                            <p style="margin: 0 0 5px 0; font-size: 14px;">Status: ${statusText}</p>
+                            ${!q.isCorrect ? `<div style="margin-top: 8px; font-size: 13px; color: #1e40af; background: white; padding: 8px; border: 1px solid #bfdbfe; border-radius: 4px;">${q.explanationText}</div>` : ''}
+                        </div>
+                    `;
+                });
+            } else {
+                htmlContent += `<p style="font-size: 14px; color: #78716c; font-style: italic; margin-bottom: 20px;">Das Quiz wurde vor dem Export nicht überprüft.</p>`;
+            }
+
+            // 4. Cornell Notizen als saubere Tabelle hinzufügen (Table verhindert Layout-Fehler in html2canvas)
+            htmlContent += `
+                <h2 style="font-size: 18px; color: #0f766e; margin-top: 40px; margin-bottom: 15px;">2. Cornell Zusammenfassung</h2>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="width: 35%; border: 1px solid #d1d5db; padding: 15px; vertical-align: top; background-color: #f9fafb;">
+                            <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Stichworte / Fragen</strong>
+                            <div style="font-size: 14px;">${cuesText || '<em>Keine Einträge</em>'}</div>
+                        </td>
+                        <td style="width: 65%; border: 1px solid #d1d5db; padding: 15px; vertical-align: top;">
+                            <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Notizen</strong>
+                            <div style="font-size: 14px;">${notesText || '<em>Keine Einträge</em>'}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border: 1px solid #d1d5db; padding: 15px; vertical-align: top; background-color: #f9fafb;">
+                            <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Zusammenfassung</strong>
+                            <div style="font-size: 14px;">${summaryText || '<em>Keine Einträge</em>'}</div>
+                        </td>
+                    </tr>
+                </table>
+            `;
+
+            printArea.innerHTML = htmlContent;
+            document.body.appendChild(printArea);
+
+            // PDF Optionen
             const opt = {
-                margin:       10,
-                filename:     'Cornell_Zusammenfassung_Demografie.pdf',
+                margin:       15,
+                filename:     'Auswertung_Demografie_Schweiz.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                html2canvas:  { scale: 2, windowWidth: 800 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-            html2pdf().set(opt).from(element).save();
+
+            // Export starten und danach den temporären Container wieder löschen
+            html2pdf().set(opt).from(printArea).save().then(() => {
+                document.body.removeChild(printArea);
+            });
         });
     </script>
 </body>
+
 </html>
