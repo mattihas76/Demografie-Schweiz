@@ -19,11 +19,9 @@
         @media print {
             body { background-color: white; }
             .no-print { display: none !important; }
-            .cornell-grid { border: 1px solid black; box-shadow: none; }
-            textarea { border: none; resize: none; overflow: hidden; }
         }
     </style>
-<!-- Chosen Palette: Warm Neutrals with Teal/Rose Accents -->
+    <!-- Chosen Palette: Warm Neutrals with Teal/Rose Accents -->
     <!-- Application Structure Plan: Lineares Lernmodul. 1. Theorie & Video, 2. Interaktive Grafik (Schmetterling), 3. Quiz zur Überprüfung, 4. Cornell-Zusammenfassung mit PDF Export. -->
     <!-- Visualization & Content Choices: Chart.js für die Pyramide (Standard für demografische Daten, interaktiv on hover). Vanilla JS für Quiz. html2pdf für den Export. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
@@ -65,10 +63,8 @@
                 
                 <div class="flex flex-col gap-2">
                     <div class="bg-stone-200 rounded-lg overflow-hidden shadow-sm aspect-video flex items-center justify-center relative">
-                        <!-- YouTube Embed Code -->
                         <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/f3QP66JQUlY?si=2WLyzUDijtdCHcXy&amp;start=30" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
-                    <!-- Fallback Link für den Fehler 150/153 -->
                     <div class="text-sm text-stone-500 text-center bg-white p-2 rounded-lg shadow-sm border border-stone-100">
                         Wird das Video blockiert? <a href="https://www.youtube.com/watch?v=f3QP66JQUlY&t=30s" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 font-medium underline flex items-center justify-center gap-1 inline-flex">▶️ Video direkt auf YouTube ansehen</a>
                     </div>
@@ -97,7 +93,7 @@
 
         <!-- 3. QUIZ -->
         <section id="quiz" class="scroll-mt-20 no-print">
-              <div class="mb-6">
+            <div class="mb-6">
                 <h2 class="text-3xl font-semibold text-teal-800 border-b-2 border-teal-200 pb-2 inline-block">3. Wissensüberprüfung</h2>
                 <p class="mt-4 text-lg">Testen Sie Ihr Verständnis der Grafik mit diesen 5 Fragen.</p>
             </div>
@@ -202,8 +198,6 @@
     <script>
         // --- 1. CHart.js Schmetterlingsgrafik ---
         const ageLabels = ['0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75-79', '80-84', '85+'];
-        
-        // Männer werden negativ dargestellt, damit sie nach links wachsen
         const maleData = [-210, -225, -235, -220, -240, -290, -320, -310, -295, -285, -320, -315, -270, -235, -180, -130, -80, -50];
         const femaleData = [200, 215, 225, 210, 230, 280, 310, 300, 285, 280, 315, 320, 280, 255, 215, 165, 120, 110];
 
@@ -216,74 +210,50 @@
                     {
                         label: 'Männer (in Tausend)',
                         data: maleData,
-                        backgroundColor: 'rgba(56, 189, 248, 0.8)', // Tailwind sky-400
+                        backgroundColor: 'rgba(56, 189, 248, 0.8)',
                         borderColor: 'rgb(14, 165, 233)',
                         borderWidth: 1
                     },
                     {
                         label: 'Frauen (in Tausend)',
                         data: femaleData,
-                        backgroundColor: 'rgba(244, 114, 182, 0.8)', // Tailwind pink-400
+                        backgroundColor: 'rgba(244, 114, 182, 0.8)',
                         borderColor: 'rgb(236, 72, 153)',
                         borderWidth: 1
                     }
                 ]
             },
             options: {
-                indexAxis: 'y', // Macht die Balken horizontal
+                indexAxis: 'y',
                 maintainAspectRatio: false,
                 responsive: true,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
+                interaction: { mode: 'index', intersect: false },
                 scales: {
                     x: {
                         stacked: true,
-                        title: {
-                            display: true,
-                            text: 'Bevölkerung in Tausend'
-                        },
-                        ticks: {
-                            // Wandelt negative Zahlen für die X-Achse wieder in positive um
-                            callback: function(value) {
-                                return Math.abs(value);
-                            }
-                        }
+                        title: { display: true, text: 'Bevölkerung in Tausend' },
+                        ticks: { callback: function(value) { return Math.abs(value); } }
                     },
-                    y: {
-                        stacked: true,
-                        title: {
-                            display: true,
-                            text: 'Altersgruppen'
-                        }
-                    }
+                    y: { stacked: true, title: { display: true, text: 'Altersgruppen' } }
                 },
                 plugins: {
                     tooltip: {
                         callbacks: {
-                            // Im Tooltip ebenfalls den absoluten Wert anzeigen
                             label: function(context) {
                                 let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed.x !== null) {
-                                    label += Math.abs(context.parsed.x);
-                                }
+                                if (label) label += ': ';
+                                if (context.parsed.x !== null) label += Math.abs(context.parsed.x);
                                 return label;
                             }
                         }
                     },
-                    legend: {
-                        position: 'bottom'
-                    }
+                    legend: { position: 'bottom' }
                 }
             }
         });
 
-        // --- 2. Quiz Logik ---
-                let quizStatus = { completed: false, score: 0, details: [] };
+        // --- 2. Quiz Logik & Datenspeicherung ---
+        let quizStatus = { completed: false, score: 0, details: [] };
 
         document.getElementById('check-quiz').addEventListener('click', function() {
             const questions = document.querySelectorAll('.quiz-question');
@@ -422,5 +392,6 @@
         });
     </script>
 </body>
-
 </html>
+
+
