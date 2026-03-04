@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demografie der Schweiz: Die Schmetterlingsgrafik verstehen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 50vh; min-height: 400px; max-height: 600px; }
+        .cornell-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; border: 2px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem; background-color: white; }
+        .cornell-header { grid-column: 1 / -1; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
+        .cornell-cues { border-right: 2px solid #e5e7eb; padding-right: 1rem; }
+        .cornell-notes { padding-left: 0.5rem; }
+        .cornell-summary { grid-column: 1 / -1; border-top: 2px solid #e5e7eb; padding-top: 1rem; margin-top: 0.5rem; }
+        textarea { resize: vertical; width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.25rem; font-family: inherit; }
+        textarea:focus { outline: none; border-color: #0d9488; ring: 1px solid #0d9488; }
+        @media print {
+            body { background-color: white; }
+            .no-print { display: none !important; }
+            .cornell-grid { border: 1px solid black; box-shadow: none; }
+            textarea { border: none; resize: none; overflow: hidden; }
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals with Teal/Rose Accents -->
+    <!-- Application Structure Plan: Lineares Lernmodul. 1. Theorie & Video, 2. Interaktive Grafik (Schmetterling), 3. Quiz zur Überprüfung, 4. Cornell-Zusammenfassung mit PDF Export. -->
+    <!-- Visualization & Content Choices: Chart.js für die Pyramide (Standard für demografische Daten, interaktiv on hover). Vanilla JS für Quiz. html2pdf für den Export. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-stone-100 text-stone-800 font-sans antialiased leading-relaxed">
+
+    <nav class="bg-teal-700 text-white shadow-md sticky top-0 z-50 no-print">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold">Lernmodul: Bevölkerungsentwicklung</h1>
+            <div class="space-x-4 text-sm hidden sm:block">
+                <a href="#theorie" class="hover:text-teal-200 transition">Theorie</a>
+                <a href="#grafik" class="hover:text-teal-200 transition">Grafik</a>
+                <a href="#quiz" class="hover:text-teal-200 transition">Quiz</a>
+                <a href="#zusammenfassung" class="hover:text-teal-200 transition">Cornell-Notizen</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-16">
+
+        <!-- 1. THEORIE & VIDEO -->
+        <section id="theorie" class="scroll-mt-20">
+            <div class="mb-6">
+                <h2 class="text-3xl font-semibold text-teal-800 border-b-2 border-teal-200 pb-2 inline-block">1. Einführung in die Demografie</h2>
+                <p class="mt-4 text-lg">Dieser Abschnitt legt die theoretischen Grundlagen und führt in die Visualisierung von Bevölkerungsdaten ein.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h3 class="text-xl font-medium text-stone-700 mb-3">Die Wissenschaft der Bevölkerung</h3>
+                    <p class="mb-4">Die Demografie untersucht die Entwicklung und Struktur von Bevölkerungen. Wichtige Faktoren sind die Geburtenrate (Fertilität), die Sterberate (Mortalität) und die Ein- sowie Auswanderung (Migration).</p>
+                    <p class="mb-4">Um die Altersstruktur einer Gesellschaft auf einen Blick zu erfassen, nutzen Demografen sogenannte <strong>Bevölkerungspyramiden</strong>. Aufgrund ihrer Form werden diese oft auch als "Schmetterlingsgrafik", "Urne" oder "Glocke" bezeichnet.</p>
+                    <ul class="list-disc pl-5 space-y-2 text-stone-600">
+                        <li><strong>Pyramide:</strong> Hohe Geburten- und Sterberate (wachsende Bevölkerung).</li>
+                        <li><strong>Glocke:</strong> Ausgeglichene Raten (stagnierende Bevölkerung).</li>
+                        <li><strong>Urne (Schmetterling):</strong> Niedrige Geburtenrate, hohe Lebenserwartung (schrumpfende/überalternde Bevölkerung).</li>
+                    </ul>
+                </div>
+                
+                <div class="flex flex-col gap-2">
+                    <div class="bg-stone-200 rounded-lg overflow-hidden shadow-sm aspect-video flex items-center justify-center relative">
+                        <!-- YouTube Embed Code -->
+                        <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/f3QP66JQUlY?si=2WLyzUDijtdCHcXy&amp;start=30" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <!-- Fallback Link für den Fehler 150/153 -->
+                    <div class="text-sm text-stone-500 text-center bg-white p-2 rounded-lg shadow-sm border border-stone-100">
+                        Wird das Video blockiert? <a href="https://www.youtube.com/watch?v=f3QP66JQUlY&t=30s" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:text-teal-800 font-medium underline flex items-center justify-center gap-1 inline-flex">▶️ Video direkt auf YouTube ansehen</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. GRAFIK -->
+        <section id="grafik" class="scroll-mt-20">
+            <div class="mb-6">
+                <h2 class="text-3xl font-semibold text-teal-800 border-b-2 border-teal-200 pb-2 inline-block">2. Die Schmetterlingsgrafik der Schweiz</h2>
+                <p class="mt-4 text-lg">Erkunden Sie die aktuelle demografische Struktur. Fahren Sie mit der Maus über die Balken, um genaue Zahlen zu sehen.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                <p class="mb-4">Die untenstehende Grafik zeigt die ständige Wohnbevölkerung der Schweiz, aufgeteilt nach Geschlecht und Altersklassen (vereinfachte Beispieldaten in Tausend). Auf der linken Seite (blau) sind die Männer dargestellt, auf der rechten Seite (rot) die Frauen. Die horizontale Achse zeigt die Anzahl der Personen, die vertikale Achse die Altersgruppen.</p>
+                <div class="bg-stone-50 border-l-4 border-teal-500 p-4 mb-6">
+                    <strong>Interpretation:</strong> Die Form gleicht in der Schweiz aktuell eher einer <em>Urne</em>. Die stärksten Jahrgänge ("Babyboomer") befinden sich im Alter zwischen 50 und 65 Jahren. Die Basis ist schmaler, was auf niedrigere Geburtenraten hinweist. Oben wird die Grafik asymmetrisch, da Frauen eine höhere Lebenserwartung haben.
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="populationPyramid"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. QUIZ -->
+        <section id="quiz" class="scroll-mt-20 no-print">
+            <div class="mb-6">
+                <h2 class="text-3xl font-semibold text-teal-800 border-b-2 border-teal-200 pb-2 inline-block">3. Wissensüberprüfung</h2>
+                <p class="mt-4 text-lg">Testen Sie Ihr Verständnis der Grafik mit diesen 5 Fragen.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-sm space-y-6" id="quiz-container">
+                <div class="quiz-question" data-correct="c">
+                    <p class="font-medium text-lg mb-2">1. Welche Altersgruppe ist gemäss der Grafik bei den Frauen (rechts) am stärksten vertreten?</p>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q1" value="a" class="mr-2"> 0-4 Jahre</label>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q1" value="b" class="mr-2"> 20-24 Jahre</label>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q1" value="c" class="mr-2"> 50-59 Jahre (Babyboomer)</label>
+                </div>
+
+                <div class="quiz-question" data-correct="b">
+                    <p class="font-medium text-lg mb-2">2. Warum reicht die Grafik auf der rechten Seite (Frauen) bei den über 80-Jährigen weiter nach aussen als auf der linken Seite (Männer)?</p>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q2" value="a" class="mr-2"> Weil mehr Frauen in die Schweiz einwandern.</label>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q2" value="b" class="mr-2"> Weil Frauen statistisch gesehen eine höhere Lebenserwartung haben.</label>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q2" value="c" class="mr-2"> Das ist ein Darstellungsfehler in der Grafik.</label>
+                </div>
+
+                <div class="quiz-question" data-correct="a">
+                    <p class="font-medium text-lg mb-2">3. Was lässt sich aus der Basis (Altersgruppen 0-14) im Vergleich zur Mitte der Grafik ablesen?</p>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q3" value="a" class="mr-2"> Die Geburtenraten sind niedriger als vor 50 Jahren.</label>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q3" value="b" class="mr-2"> Die Bevölkerung wächst derzeit rasant.</label>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q3" value="c" class="mr-2"> Es gibt extrem hohe Kindersterblichkeit.</label>
+                </div>
+
+                <div class="quiz-question" data-correct="b">
+                    <p class="font-medium text-lg mb-2">4. Welcher Grundform entspricht die aktuelle Schweizer Bevölkerungsgrafik am ehesten?</p>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q4" value="a" class="mr-2"> Klassische Pyramide (breite Basis, spitze Kuppe)</label>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q4" value="b" class="mr-2"> Urne / Schmetterling (schmale Basis, dicker Bauch)</label>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q4" value="c" class="mr-2"> Rechteck / Säule (alle Altersgruppen gleich stark)</label>
+                </div>
+
+                <div class="quiz-question" data-correct="a">
+                    <p class="font-medium text-lg mb-2">5. Wie hoch ist ungefähr die Anzahl der 50-54-jährigen Männer in dieser Grafik?</p>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q5" value="a" class="mr-2"> ca. 320'000</label>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q5" value="b" class="mr-2"> ca. 150'000</label>
+                    <label class="block p-2 hover:bg-stone-50 rounded cursor-pointer"><input type="radio" name="q5" value="c" class="mr-2"> ca. 500'000</label>
+                </div>
+
+                <button id="check-quiz" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded transition">Antworten überprüfen</button>
+                <div id="quiz-result" class="mt-4 font-medium hidden p-3 rounded"></div>
+            </div>
+        </section>
+
+        <!-- 4. CORNELL ZUSAMMENFASSUNG -->
+        <section id="zusammenfassung" class="scroll-mt-20 pb-12">
+            <div class="mb-6 flex justify-between items-end no-print">
+                <div>
+                    <h2 class="text-3xl font-semibold text-teal-800 border-b-2 border-teal-200 pb-2 inline-block">4. Cornell Zusammenfassung</h2>
+                    <p class="mt-4 text-lg">Nutzen Sie diese Struktur, um die wichtigsten Erkenntnisse aus Video, Text und Grafik zu notieren.</p>
+                </div>
+                <button id="export-pdf" class="bg-stone-800 hover:bg-stone-900 text-white font-bold py-2 px-4 rounded transition shadow flex items-center">
+                    <span class="mr-2 text-xl">📄</span> Als PDF exportieren
+                </button>
+            </div>
+
+            <div id="cornell-container" class="cornell-grid">
+                <div class="cornell-header flex justify-between">
+                    <div><strong>Thema:</strong> Demografie Schweiz</div>
+                    <div><strong>Datum:</strong> <span id="current-date"></span></div>
+                </div>
+                
+                <div class="cornell-cues">
+                    <label class="block font-semibold mb-2 text-stone-600 uppercase text-sm">Stichworte / Fragen</label>
+                    <textarea class="h-64 border-none bg-stone-50" placeholder="Hauptbegriffe, Leitfragen, Vokabeln..."></textarea>
+                </div>
+                
+                <div class="cornell-notes">
+                    <label class="block font-semibold mb-2 text-stone-600 uppercase text-sm">Notizen</label>
+                    <textarea class="h-64 border-none bg-stone-50" placeholder="Details aus Video und Text, Erklärungen zur Grafik..."></textarea>
+                </div>
+                
+                <div class="cornell-summary">
+                    <label class="block font-semibold mb-2 text-stone-600 uppercase text-sm">Zusammenfassung</label>
+                    <textarea class="h-32 border-none bg-stone-50" placeholder="Fassen Sie die wichtigsten Erkenntnisse in 2-3 Sätzen zusammen..."></textarea>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-800 text-stone-400 py-6 text-center no-print">
+        <p>&copy; Lernmodul Demografie. Erstellt für interaktives Lernen.</p>
+    </footer>
+
+    <script>
+        // --- 1. CHart.js Schmetterlingsgrafik ---
+        const ageLabels = ['0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75-79', '80-84', '85+'];
+        
+        // Männer werden negativ dargestellt, damit sie nach links wachsen
+        const maleData = [-210, -225, -235, -220, -240, -290, -320, -310, -295, -285, -320, -315, -270, -235, -180, -130, -80, -50];
+        const femaleData = [200, 215, 225, 210, 230, 280, 310, 300, 285, 280, 315, 320, 280, 255, 215, 165, 120, 110];
+
+        const ctx = document.getElementById('populationPyramid').getContext('2d');
+        const pyramidChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ageLabels,
+                datasets: [
+                    {
+                        label: 'Männer (in Tausend)',
+                        data: maleData,
+                        backgroundColor: 'rgba(56, 189, 248, 0.8)', // Tailwind sky-400
+                        borderColor: 'rgb(14, 165, 233)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Frauen (in Tausend)',
+                        data: femaleData,
+                        backgroundColor: 'rgba(244, 114, 182, 0.8)', // Tailwind pink-400
+                        borderColor: 'rgb(236, 72, 153)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y', // Macht die Balken horizontal
+                maintainAspectRatio: false,
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Bevölkerung in Tausend'
+                        },
+                        ticks: {
+                            // Wandelt negative Zahlen für die X-Achse wieder in positive um
+                            callback: function(value) {
+                                return Math.abs(value);
+                            }
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Altersgruppen'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            // Im Tooltip ebenfalls den absoluten Wert anzeigen
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.x !== null) {
+                                    label += Math.abs(context.parsed.x);
+                                }
+                                return label;
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // --- 2. Quiz Logik ---
+        document.getElementById('check-quiz').addEventListener('click', function() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const selected = q.querySelector('input[type="radio"]:checked');
+                const correctVal = q.getAttribute('data-correct');
+                
+                // Reset styling
+                q.classList.remove('bg-green-50', 'bg-red-50', 'border-l-4', 'border-green-500', 'border-red-500');
+                
+                if (selected) {
+                    if (selected.value === correctVal) {
+                        score++;
+                        q.classList.add('bg-green-50', 'border-l-4', 'border-green-500');
+                    } else {
+                        q.classList.add('bg-red-50', 'border-l-4', 'border-red-500');
+                    }
+                } else {
+                    // Keine Antwort gegeben
+                    q.classList.add('bg-red-50', 'border-l-4', 'border-red-500');
+                }
+            });
+
+            const resultDiv = document.getElementById('quiz-result');
+            resultDiv.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+            
+            if (score === 5) {
+                resultDiv.textContent = `Perfekt! ${score} von 5 Fragen richtig beantwortet.`;
+                resultDiv.classList.add('bg-green-100', 'text-green-800');
+            } else {
+                resultDiv.textContent = `Sie haben ${score} von 5 Fragen richtig. Überprüfen Sie die rot markierten Antworten.`;
+                resultDiv.classList.add('bg-red-100', 'text-red-800');
+            }
+        });
+
+        // --- 3. Cornell Export & Datum ---
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('de-CH');
+
+        document.getElementById('export-pdf').addEventListener('click', function() {
+            const element = document.getElementById('cornell-container');
+            const opt = {
+                margin:       10,
+                filename:     'Cornell_Zusammenfassung_Demografie.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        });
+    </script>
+</body>
+</html>
