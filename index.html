@@ -299,37 +299,29 @@
             }
         });
 
-        // --- 3. Intelligenter PDF Export (Endgültiger Fix) ---
+       // --- 3. Intelligenter PDF Export (Direkter String-Export - Garantiert nicht leer) ---
         document.getElementById('current-date').textContent = new Date().toLocaleDateString('de-CH');
 
         document.getElementById('export-pdf').addEventListener('click', function() {
+            // Button Feedback geben
+            const btn = this;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ Wird generiert...';
+            btn.disabled = true;
+
             // Text aus Textfeldern holen und Zeilenumbrüche für HTML vorbereiten
             const cuesText = document.getElementById('input-cues').value.replace(/\n/g, '<br>');
             const notesText = document.getElementById('input-notes').value.replace(/\n/g, '<br>');
             const summaryText = document.getElementById('input-summary').value.replace(/\n/g, '<br>');
 
-            // 1. Versteckten "Druck-Container" erstellen
-            const printArea = document.createElement('div');
-            
-            // WICHTIG: Das Element MUSS im Dokument sein, damit der PDF-Generator es findet.
-            // Wir legen es absolut an den Seitenanfang, aber unsichtbar in den Hintergrund (z-index: -1000).
-            printArea.style.position = 'absolute';
-            printArea.style.top = '0';
-            printArea.style.left = '0';
-            printArea.style.width = '800px'; 
-            printArea.style.padding = '40px';
-            printArea.style.backgroundColor = '#ffffff'; // Weisser Hintergrund ist zwingend
-            printArea.style.zIndex = '-1000'; 
-            printArea.style.color = '#292524';
-            printArea.style.fontFamily = 'Arial, sans-serif';
-
-            // 2. Dokument-Kopf
+            // HTML-Inhalt direkt als reinen Text aufbauen (wird nicht ins Dokument eingefügt)
             let htmlContent = `
-                <h1 style="font-size: 24px; color: #0f766e; border-bottom: 2px solid #5eead4; padding-bottom: 10px; margin-bottom: 20px;">Lernauswertung: Demografie Schweiz</h1>
-                <p style="margin-bottom: 30px;"><strong>Erstellungsdatum:</strong> ${new Date().toLocaleDateString('de-CH')}</p>
+                <div style="font-family: Arial, sans-serif; color: #292524; background: white; padding: 20px;">
+                    <h1 style="font-size: 24px; color: #0f766e; border-bottom: 2px solid #5eead4; padding-bottom: 10px; margin-bottom: 20px;">Lernauswertung: Demografie Schweiz</h1>
+                    <p style="margin-bottom: 30px;"><strong>Erstellungsdatum:</strong> ${new Date().toLocaleDateString('de-CH')}</p>
             `;
 
-            // 3. Quiz Resultate hinzufügen
+            // Quiz Resultate hinzufügen
             htmlContent += `<h2 style="font-size: 18px; color: #0f766e; margin-bottom: 15px;">1. Quiz Resultate (${quizStatus.completed ? quizStatus.score + ' von 5 Punkten' : 'Nicht absolviert'})</h2>`;
             
             if (quizStatus.completed) {
@@ -350,46 +342,49 @@
                 htmlContent += `<p style="font-size: 14px; color: #78716c; font-style: italic; margin-bottom: 20px;">Das Quiz wurde vor dem Export nicht überprüft.</p>`;
             }
 
-            // 4. Cornell Notizen hinzufügen
+            // Cornell Notizen hinzufügen
             htmlContent += `
-                <h2 style="font-size: 18px; color: #0f766e; margin-top: 40px; margin-bottom: 15px;">2. Cornell Zusammenfassung</h2>
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr>
-                        <td style="width: 35%; border: 1px solid #d1d5db; padding: 15px; vertical-align: top; background-color: #f9fafb;">
-                            <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Stichworte / Fragen</strong>
-                            <div style="font-size: 14px; line-height: 1.5;">${cuesText || '<em>Keine Einträge</em>'}</div>
-                        </td>
-                        <td style="width: 65%; border: 1px solid #d1d5db; padding: 15px; vertical-align: top;">
-                            <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Notizen</strong>
-                            <div style="font-size: 14px; line-height: 1.5;">${notesText || '<em>Keine Einträge</em>'}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="border: 1px solid #d1d5db; padding: 15px; vertical-align: top; background-color: #f9fafb;">
-                            <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Zusammenfassung</strong>
-                            <div style="font-size: 14px; line-height: 1.5;">${summaryText || '<em>Keine Einträge</em>'}</div>
-                        </td>
-                    </tr>
-                </table>
+                    <h2 style="font-size: 18px; color: #0f766e; margin-top: 40px; margin-bottom: 15px;">2. Cornell Zusammenfassung</h2>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="width: 35%; border: 1px solid #d1d5db; padding: 15px; vertical-align: top; background-color: #f9fafb;">
+                                <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Stichworte / Fragen</strong>
+                                <div style="font-size: 14px; line-height: 1.5;">${cuesText || '<em>Keine Einträge</em>'}</div>
+                            </td>
+                            <td style="width: 65%; border: 1px solid #d1d5db; padding: 15px; vertical-align: top;">
+                                <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Notizen</strong>
+                                <div style="font-size: 14px; line-height: 1.5;">${notesText || '<em>Keine Einträge</em>'}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border: 1px solid #d1d5db; padding: 15px; vertical-align: top; background-color: #f9fafb;">
+                                <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Zusammenfassung</strong>
+                                <div style="font-size: 14px; line-height: 1.5;">${summaryText || '<em>Keine Einträge</em>'}</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             `;
-
-            printArea.innerHTML = htmlContent;
-            
-            // WICHTIG: Das Element physisch an die Webseite anhängen
-            document.body.appendChild(printArea);
 
             // PDF Optionen
             const opt = {
                 margin:       15,
                 filename:     'Auswertung_Demografie_Schweiz.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
+                html2canvas:  { scale: 2, letterRendering: true },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Export starten und das unsichtbare Element danach sofort wieder löschen
-            html2pdf().set(opt).from(printArea).save().then(() => {
-                document.body.removeChild(printArea);
+            // Den HTML-Text DIREKT an html2pdf übergeben. 
+            // So muss nichts auf der Webseite versteckt werden und das PDF wird immer sauber gefüllt.
+            html2pdf().set(opt).from(htmlContent).save().then(() => {
+                // Button wiederherstellen, wenn PDF fertig ist
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }).catch(err => {
+                console.error("PDF Error: ", err);
+                btn.innerHTML = '❌ Fehler';
+                setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 3000);
             });
         });
     </script>
