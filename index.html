@@ -299,7 +299,7 @@
             }
         });
 
-        // --- 3. Intelligenter PDF Export ---
+        // --- 3. Intelligenter PDF Export (Korrigiert für leere Seiten) ---
         document.getElementById('current-date').textContent = new Date().toLocaleDateString('de-CH');
 
         document.getElementById('export-pdf').addEventListener('click', function() {
@@ -308,24 +308,14 @@
             const notesText = document.getElementById('input-notes').value.replace(/\n/g, '<br>');
             const summaryText = document.getElementById('input-summary').value.replace(/\n/g, '<br>');
 
-            // 1. Versteckten "Druck-Container" erstellen
-            const printArea = document.createElement('div');
-            printArea.style.position = 'absolute';
-            printArea.style.left = '-9999px';
-            printArea.style.top = '0';
-            printArea.style.width = '800px'; 
-            printArea.style.padding = '40px';
-            printArea.style.backgroundColor = 'white';
-            printArea.style.fontFamily = 'sans-serif';
-            printArea.style.color = '#292524';
-
-            // 2. Dokument-Kopf
+            // HTML-Inhalt für das PDF aufbauen
             let htmlContent = `
-                <h1 style="font-size: 24px; color: #0f766e; border-bottom: 2px solid #5eead4; padding-bottom: 10px; margin-bottom: 20px;">Lernauswertung: Demografie Schweiz</h1>
-                <p style="margin-bottom: 30px;"><strong>Erstellungsdatum:</strong> ${new Date().toLocaleDateString('de-CH')}</p>
+                <div style="font-family: Arial, sans-serif; color: #292524; background: white; padding: 10px; width: 100%; max-width: 800px; margin: 0 auto;">
+                    <h1 style="font-size: 24px; color: #0f766e; border-bottom: 2px solid #5eead4; padding-bottom: 10px; margin-bottom: 20px;">Lernauswertung: Demografie Schweiz</h1>
+                    <p style="margin-bottom: 30px;"><strong>Erstellungsdatum:</strong> ${new Date().toLocaleDateString('de-CH')}</p>
             `;
 
-            // 3. Quiz Resultate hinzufügen
+            // Quiz Resultate hinzufügen
             htmlContent += `<h2 style="font-size: 18px; color: #0f766e; margin-bottom: 15px;">1. Quiz Resultate (${quizStatus.completed ? quizStatus.score + ' von 5 Punkten' : 'Nicht absolviert'})</h2>`;
             
             if (quizStatus.completed) {
@@ -346,45 +336,45 @@
                 htmlContent += `<p style="font-size: 14px; color: #78716c; font-style: italic; margin-bottom: 20px;">Das Quiz wurde vor dem Export nicht überprüft.</p>`;
             }
 
-            // 4. Cornell Notizen hinzufügen
+            // Cornell Notizen als Tabelle
             htmlContent += `
-                <h2 style="font-size: 18px; color: #0f766e; margin-top: 40px; margin-bottom: 15px;">2. Cornell Zusammenfassung</h2>
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr>
-                        <td style="width: 35%; border: 1px solid #d1d5db; padding: 15px; vertical-align: top; background-color: #f9fafb;">
-                            <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Stichworte / Fragen</strong>
-                            <div style="font-size: 14px;">${cuesText || '<em>Keine Einträge</em>'}</div>
-                        </td>
-                        <td style="width: 65%; border: 1px solid #d1d5db; padding: 15px; vertical-align: top;">
-                            <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Notizen</strong>
-                            <div style="font-size: 14px;">${notesText || '<em>Keine Einträge</em>'}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="border: 1px solid #d1d5db; padding: 15px; vertical-align: top; background-color: #f9fafb;">
-                            <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Zusammenfassung</strong>
-                            <div style="font-size: 14px;">${summaryText || '<em>Keine Einträge</em>'}</div>
-                        </td>
-                    </tr>
-                </table>
+                    <h2 style="font-size: 18px; color: #0f766e; margin-top: 40px; margin-bottom: 15px;">2. Cornell Zusammenfassung</h2>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="width: 35%; border: 1px solid #d1d5db; padding: 15px; vertical-align: top; background-color: #f9fafb;">
+                                <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Stichworte / Fragen</strong>
+                                <div style="font-size: 14px;">${cuesText || '<em>Keine Einträge</em>'}</div>
+                            </td>
+                            <td style="width: 65%; border: 1px solid #d1d5db; padding: 15px; vertical-align: top;">
+                                <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Notizen</strong>
+                                <div style="font-size: 14px;">${notesText || '<em>Keine Einträge</em>'}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border: 1px solid #d1d5db; padding: 15px; vertical-align: top; background-color: #f9fafb;">
+                                <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Zusammenfassung</strong>
+                                <div style="font-size: 14px;">${summaryText || '<em>Keine Einträge</em>'}</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div> <!-- End Main Wrapper -->
             `;
 
+            // Element generieren (NICHT an die Webseite anhängen, html2pdf rendert es intern!)
+            const printArea = document.createElement('div');
             printArea.innerHTML = htmlContent;
-            document.body.appendChild(printArea);
 
             // PDF Optionen
             const opt = {
                 margin:       15,
                 filename:     'Auswertung_Demografie_Schweiz.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, windowWidth: 800 },
+                html2canvas:  { scale: 2, useCORS: true },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Export starten und Container wieder entfernen
-            html2pdf().set(opt).from(printArea).save().then(() => {
-                document.body.removeChild(printArea);
-            });
+            // Export starten
+            html2pdf().set(opt).from(printArea).save();
         });
     </script>
 </body>
