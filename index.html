@@ -21,10 +21,6 @@
             .no-print { display: none !important; }
         }
     </style>
-    <!-- Chosen Palette: Warm Neutrals with Teal/Rose Accents -->
-    <!-- Application Structure Plan: Lineares Lernmodul. 1. Theorie & Video, 2. Interaktive Grafik (Schmetterling), 3. Quiz zur Überprüfung, 4. Cornell-Zusammenfassung mit PDF Export. -->
-    <!-- Visualization & Content Choices: Chart.js für die Pyramide (Standard für demografische Daten, interaktiv on hover). Vanilla JS für Quiz. html2pdf für den Export. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
 <body class="bg-stone-100 text-stone-800 font-sans antialiased leading-relaxed">
 
@@ -35,7 +31,7 @@
                 <a href="#theorie" class="hover:text-teal-200 transition">Theorie</a>
                 <a href="#grafik" class="hover:text-teal-200 transition">Grafik</a>
                 <a href="#quiz" class="hover:text-teal-200 transition">Quiz</a>
-                <a href="#zusammenfassung" class="hover:text-teal-200 transition">Cornell-Notizen</a>
+                <a href="#zusammenfassung" class="hover:text-teal-200 transition">Notizen</a>
             </div>
         </div>
     </nav>
@@ -303,7 +299,7 @@
             }
         });
 
-        // --- 3. Intelligenter PDF Export (Verhindert leere Seiten) ---
+        // --- 3. Intelligenter PDF Export ---
         document.getElementById('current-date').textContent = new Date().toLocaleDateString('de-CH');
 
         document.getElementById('export-pdf').addEventListener('click', function() {
@@ -312,7 +308,7 @@
             const notesText = document.getElementById('input-notes').value.replace(/\n/g, '<br>');
             const summaryText = document.getElementById('input-summary').value.replace(/\n/g, '<br>');
 
-            // 1. Versteckten "Druck-Container" erstellen, damit html2pdf es fehlerfrei lesen kann
+            // 1. Versteckten "Druck-Container" erstellen
             const printArea = document.createElement('div');
             printArea.style.position = 'absolute';
             printArea.style.left = '-9999px';
@@ -350,7 +346,7 @@
                 htmlContent += `<p style="font-size: 14px; color: #78716c; font-style: italic; margin-bottom: 20px;">Das Quiz wurde vor dem Export nicht überprüft.</p>`;
             }
 
-            // 4. Cornell Notizen als saubere Tabelle hinzufügen (Table verhindert Layout-Fehler in html2canvas)
+            // 4. Cornell Notizen hinzufügen
             htmlContent += `
                 <h2 style="font-size: 18px; color: #0f766e; margin-top: 40px; margin-bottom: 15px;">2. Cornell Zusammenfassung</h2>
                 <table style="width: 100%; border-collapse: collapse;">
@@ -385,7 +381,7 @@
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            // Export starten und danach den temporären Container wieder löschen
+            // Export starten und Container wieder entfernen
             html2pdf().set(opt).from(printArea).save().then(() => {
                 document.body.removeChild(printArea);
             });
@@ -393,5 +389,3 @@
     </script>
 </body>
 </html>
-
-
