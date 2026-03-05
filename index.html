@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demografie der Schweiz: Die Schmetterlingsgrafik verstehen</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Garantiert funktionierende Version von Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
     <style>
         .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 50vh; min-height: 400px; max-height: 600px; }
         .cornell-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; border: 2px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem; background-color: white; }
@@ -16,29 +17,14 @@
         textarea { resize: vertical; width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.25rem; font-family: inherit; }
         textarea:focus { outline: none; border-color: #0d9488; ring: 1px solid #0d9488; }
         
-        /* Verstecke den Druckbereich auf der normalen Webseite */
-        #print-area { display: none; }
-        
-        /* 100% Zuverlässiges Druck-Layout */
+        /* Sorgt dafür, dass beim normalen Druck die Seite nicht völlig zerbricht */
         @media print {
-            /* Verstecke die gesamte Webseite beim Drucken */
-            body > *:not(#print-area) { display: none !important; }
-            /* Zeige NUR das sauber generierte Export-Dokument */
-            #print-area { display: block !important; padding: 1cm; background: white; color: black; }
-            body { background-color: white; }
-            /* Erzwingt, dass Hintergrundfarben im PDF gedruckt werden (wichtig für die grünen/roten Boxen) */
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .no-print { display: none !important; }
+            body { background-color: white !important; }
         }
     </style>
 </head>
 <body class="bg-stone-100 text-stone-800 font-sans antialiased leading-relaxed">
-
-    <!-- Feedback Box beim Export (Sichtbar, wenn Klick ausgeführt wird) -->
-    <div id="print-msg" class="hidden fixed bottom-6 right-6 bg-teal-800 text-white p-5 rounded-lg shadow-2xl z-50 max-w-sm border-l-4 border-teal-400 transform transition-all duration-300 translate-y-0 no-print">
-        <p class="font-bold text-lg mb-2 flex items-center"><span class="mr-2 text-2xl">✅</span> Druck-Ansicht bereit!</p>
-        <p class="text-sm mb-3 text-teal-50">Falls sich der Dialog nicht automatisch öffnet, drücken Sie bitte <strong>Ctrl + P</strong> (Windows) oder <strong>Cmd + P</strong> (Mac), um das PDF zu speichern.</p>
-        <button id="close-msg" class="bg-teal-700 hover:bg-teal-600 px-4 py-2 rounded text-sm font-medium transition w-full">Verstanden</button>
-    </div>
 
     <nav class="bg-teal-700 text-white shadow-md sticky top-0 z-40 no-print">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -104,7 +90,7 @@
         </section>
 
         <!-- 3. QUIZ -->
-        <section id="quiz" class="scroll-mt-20">
+        <section id="quiz" class="scroll-mt-20 no-print">
             <div class="mb-6">
                 <h2 class="text-3xl font-semibold text-teal-800 border-b-2 border-teal-200 pb-2 inline-block">3. Wissensüberprüfung</h2>
                 <p class="mt-4 text-lg">Testen Sie Ihr Verständnis der Grafik mit diesen 5 Fragen.</p>
@@ -168,20 +154,19 @@
 
         <!-- 4. CORNELL ZUSAMMENFASSUNG -->
         <section id="zusammenfassung" class="scroll-mt-20 pb-12">
-            <div class="mb-6 flex justify-between items-end">
+            <div class="mb-6 flex justify-between items-end no-print">
                 <div>
                     <h2 class="text-3xl font-semibold text-teal-800 border-b-2 border-teal-200 pb-2 inline-block">4. Zusammenfassung & Export</h2>
-                    <p class="mt-4 text-lg">Nutzen Sie diese Struktur für Ihre Notizen. Beim Klick auf den Button öffnet sich ein Dialog: Wählen Sie dort als Ziel <strong>"Als PDF speichern"</strong> aus.</p>
+                    <p class="mt-4 text-lg">Notieren Sie hier Ihre Erkenntnisse. Klicken Sie auf Exportieren und wählen Sie als Drucker <strong>"Als PDF speichern"</strong>.</p>
                 </div>
                 <div class="flex flex-col items-end">
-                    <button id="export-pdf" class="bg-stone-800 hover:bg-stone-900 text-white font-bold py-2 px-4 rounded transition shadow flex items-center">
+                    <button id="export-pdf" class="bg-stone-800 hover:bg-stone-900 text-white font-bold py-2 px-6 rounded transition shadow flex items-center">
                         <span class="mr-2 text-xl">📄</span> Auswertung exportieren
                     </button>
-                    <span class="text-xs text-stone-500 mt-2">Druckdialog öffnet sich &rarr; "Als PDF speichern"</span>
                 </div>
             </div>
 
-            <div id="cornell-container" class="cornell-grid">
+            <div id="cornell-container" class="cornell-grid no-print">
                 <div class="cornell-header flex justify-between">
                     <div><strong>Thema:</strong> Demografie Schweiz</div>
                     <div><strong>Datum:</strong> <span id="current-date"></span></div>
@@ -210,195 +195,218 @@
         <p>&copy; Lernmodul Demografie. Erstellt für interaktives Lernen.</p>
     </footer>
 
-    <!-- HIER WIRD DAS PDF DOKUMENT GENERIERT (Auf der Webseite unsichtbar, nur für den Export) -->
-    <div id="print-area"></div>
-
     <script>
-        // --- 1. Chart.js Schmetterlingsgrafik ---
-        const ageLabels = ['0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75-79', '80-84', '85+'];
-        const maleData = [-210, -225, -235, -220, -240, -290, -320, -310, -295, -285, -320, -315, -270, -235, -180, -130, -80, -50];
-        const femaleData = [200, 215, 225, 210, 230, 280, 310, 300, 285, 280, 315, 320, 280, 255, 215, 165, 120, 110];
-
-        const ctx = document.getElementById('populationPyramid').getContext('2d');
-        const pyramidChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ageLabels,
-                datasets: [
-                    {
-                        label: 'Männer (in Tausend)',
-                        data: maleData,
-                        backgroundColor: 'rgba(56, 189, 248, 0.8)',
-                        borderColor: 'rgb(14, 165, 233)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Frauen (in Tausend)',
-                        data: femaleData,
-                        backgroundColor: 'rgba(244, 114, 182, 0.8)',
-                        borderColor: 'rgb(236, 72, 153)',
-                        borderWidth: 1
-                    }
-                ]
-            },
-            options: {
-                indexAxis: 'y',
-                maintainAspectRatio: false,
-                responsive: true,
-                interaction: { mode: 'index', intersect: false },
-                scales: {
-                    x: {
-                        stacked: true,
-                        title: { display: true, text: 'Bevölkerung in Tausend' },
-                        ticks: { callback: function(value) { return Math.abs(value); } }
-                    },
-                    y: { stacked: true, title: { display: true, text: 'Altersgruppen' } }
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) label += ': ';
-                                if (context.parsed.x !== null) label += Math.abs(context.parsed.x);
-                                return label;
-                            }
-                        }
-                    },
-                    legend: { position: 'bottom' }
-                }
-            }
-        });
-
-        // --- 2. Quiz Logik & Datenspeicherung ---
-        let quizStatus = { completed: false, score: 0, details: [] };
-
-        document.getElementById('check-quiz').addEventListener('click', function() {
-            const questions = document.querySelectorAll('.quiz-question');
-            quizStatus.score = 0;
-            quizStatus.details = [];
-            quizStatus.completed = true;
+        // Verhindert Fehler: Das gesamte JavaScript wird erst ausgeführt, wenn die Seite komplett geladen ist!
+        document.addEventListener('DOMContentLoaded', function() {
             
-            questions.forEach((q, index) => {
-                const selected = q.querySelector('input[type="radio"]:checked');
-                const correctVal = q.getAttribute('data-correct');
-                const explanationDiv = q.querySelector('.explanation');
-                const questionText = q.querySelector('.question-text').innerText;
-                
-                let isCorrect = false;
-                
-                // Reset styling
-                q.classList.remove('bg-green-50', 'bg-red-50', 'border-l-4', 'border-green-500', 'border-red-500');
-                explanationDiv.classList.add('hidden');
-                
-                if (selected && selected.value === correctVal) {
-                    isCorrect = true;
-                    quizStatus.score++;
-                    q.classList.add('bg-green-50', 'border-l-4', 'border-green-500');
-                } else {
-                    q.classList.add('bg-red-50', 'border-l-4', 'border-red-500');
-                    explanationDiv.classList.remove('hidden');
-                }
+            // --- 1. Chart.js Schmetterlingsgrafik ---
+            const ageLabels = ['0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75-79', '80-84', '85+'];
+            const maleData = [-210, -225, -235, -220, -240, -290, -320, -310, -295, -285, -320, -315, -270, -235, -180, -130, -80, -50];
+            const femaleData = [200, 215, 225, 210, 230, 280, 310, 300, 285, 280, 315, 320, 280, 255, 215, 165, 120, 110];
 
-                // Speichere Resultat für Export
-                quizStatus.details.push({
-                    question: questionText,
-                    isCorrect: isCorrect,
-                    explanationText: explanationDiv.innerHTML
-                });
+            const ctx = document.getElementById('populationPyramid').getContext('2d');
+            const pyramidChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ageLabels,
+                    datasets: [
+                        {
+                            label: 'Männer (in Tausend)',
+                            data: maleData,
+                            backgroundColor: 'rgba(56, 189, 248, 0.8)',
+                            borderColor: 'rgb(14, 165, 233)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Frauen (in Tausend)',
+                            data: femaleData,
+                            backgroundColor: 'rgba(244, 114, 182, 0.8)',
+                            borderColor: 'rgb(236, 72, 153)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    interaction: { mode: 'index', intersect: false },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: { display: true, text: 'Bevölkerung in Tausend' },
+                            ticks: { callback: function(value) { return Math.abs(value); } }
+                        },
+                        y: { stacked: true, title: { display: true, text: 'Altersgruppen' } }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed.x !== null) label += Math.abs(context.parsed.x);
+                                    return label;
+                                }
+                            }
+                        },
+                        legend: { position: 'bottom' }
+                    }
+                }
             });
 
-            const resultDiv = document.getElementById('quiz-result');
-            resultDiv.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
-            
-            if (quizStatus.score === 5) {
-                resultDiv.textContent = `Perfekt! ${quizStatus.score} von 5 Fragen richtig beantwortet.`;
-                resultDiv.classList.add('bg-green-100', 'text-green-800');
-            } else {
-                resultDiv.textContent = `Sie haben ${quizStatus.score} von 5 Fragen richtig. Lesen Sie sich die blauen Boxen durch, um die Fehler zu verstehen.`;
-                resultDiv.classList.add('bg-red-100', 'text-red-800');
-            }
-        });
+            // --- 2. Quiz Logik & Datenspeicherung ---
+            let quizStatus = { completed: false, score: 0, details: [] };
 
-        // --- 3. 100% Zuverlässiger nativer PDF/Print Export ---
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('de-CH');
-
-        // Schliessen-Button für die Message Box
-        document.getElementById('close-msg').addEventListener('click', function() {
-            document.getElementById('print-msg').classList.add('hidden');
-        });
-
-        document.getElementById('export-pdf').addEventListener('click', function() {
-            const cuesText = document.getElementById('input-cues').value.replace(/\n/g, '<br>');
-            const notesText = document.getElementById('input-notes').value.replace(/\n/g, '<br>');
-            const summaryText = document.getElementById('input-summary').value.replace(/\n/g, '<br>');
-
-            let htmlContent = `
-                <div style="font-family: Arial, sans-serif;">
-                    <h1 style="font-size: 24px; color: #0f766e; border-bottom: 2px solid #5eead4; padding-bottom: 10px; margin-bottom: 20px;">Lernauswertung: Demografie Schweiz</h1>
-                    <p style="margin-bottom: 30px;"><strong>Erstellungsdatum:</strong> ${new Date().toLocaleDateString('de-CH')}</p>
-            `;
-
-            // Quiz Resultate hinzufügen
-            htmlContent += `<h2 style="font-size: 18px; color: #0f766e; margin-bottom: 15px;">1. Quiz Resultate (${quizStatus.completed ? quizStatus.score + ' von 5 Punkten' : 'Nicht absolviert'})</h2>`;
-            
-            if (quizStatus.completed) {
-                quizStatus.details.forEach((q, i) => {
-                    const bgColor = q.isCorrect ? '#f0fdf4' : '#fef2f2';
-                    const borderColor = q.isCorrect ? '#22c55e' : '#ef4444';
-                    const statusText = q.isCorrect ? '<span style="color: #166534; font-weight: bold;">Richtig</span>' : '<span style="color: #991b1b; font-weight: bold;">Falsch</span>';
+            document.getElementById('check-quiz').addEventListener('click', function() {
+                const questions = document.querySelectorAll('.quiz-question');
+                quizStatus.score = 0;
+                quizStatus.details = [];
+                quizStatus.completed = true;
+                
+                questions.forEach((q, index) => {
+                    const selected = q.querySelector('input[type="radio"]:checked');
+                    const correctVal = q.getAttribute('data-correct');
+                    const explanationDiv = q.querySelector('.explanation');
+                    const questionText = q.querySelector('.question-text').innerText;
                     
-                    htmlContent += `
-                        <div style="background-color: ${bgColor}; border-left: 4px solid ${borderColor}; padding: 12px; margin-bottom: 10px; border-radius: 4px;">
-                            <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Frage ${i+1}:</strong> ${q.question}</p>
-                            <p style="margin: 0 0 5px 0; font-size: 14px;">Status: ${statusText}</p>
-                            ${!q.isCorrect ? `<div style="margin-top: 8px; font-size: 13px; color: #1e40af; background: white; padding: 8px; border: 1px solid #bfdbfe; border-radius: 4px;">${q.explanationText}</div>` : ''}
-                        </div>
-                    `;
+                    let isCorrect = false;
+                    
+                    q.classList.remove('bg-green-50', 'bg-red-50', 'border-l-4', 'border-green-500', 'border-red-500');
+                    explanationDiv.classList.add('hidden');
+                    
+                    if (selected && selected.value === correctVal) {
+                        isCorrect = true;
+                        quizStatus.score++;
+                        q.classList.add('bg-green-50', 'border-l-4', 'border-green-500');
+                    } else {
+                        q.classList.add('bg-red-50', 'border-l-4', 'border-red-500');
+                        explanationDiv.classList.remove('hidden');
+                    }
+
+                    quizStatus.details.push({
+                        question: questionText,
+                        isCorrect: isCorrect,
+                        explanationText: explanationDiv.innerHTML
+                    });
                 });
-            } else {
-                htmlContent += `<p style="font-size: 14px; color: #78716c; font-style: italic; margin-bottom: 20px;">Das Quiz wurde vor dem Export nicht überprüft.</p>`;
-            }
 
-            // Cornell Notizen hinzufügen
-            htmlContent += `
-                    <h2 style="font-size: 18px; color: #0f766e; margin-top: 40px; margin-bottom: 15px;">2. Cornell Zusammenfassung</h2>
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <tr>
-                            <td style="width: 35%; border: 1px solid #d1d5db; padding: 15px; vertical-align: top; background-color: #f9fafb;">
-                                <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Stichworte / Fragen</strong>
-                                <div style="font-size: 14px; line-height: 1.5;">${cuesText || '<em>Keine Einträge</em>'}</div>
-                            </td>
-                            <td style="width: 65%; border: 1px solid #d1d5db; padding: 15px; vertical-align: top;">
-                                <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Notizen</strong>
-                                <div style="font-size: 14px; line-height: 1.5;">${notesText || '<em>Keine Einträge</em>'}</div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border: 1px solid #d1d5db; padding: 15px; vertical-align: top; background-color: #f9fafb;">
-                                <strong style="display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e;">Zusammenfassung</strong>
-                                <div style="font-size: 14px; line-height: 1.5;">${summaryText || '<em>Keine Einträge</em>'}</div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            `;
-
-            // Den HTML-Inhalt in den Print-Bereich schreiben
-            document.getElementById('print-area').innerHTML = htmlContent;
-
-            // Zeige Feedback-Meldung an (Wichtig für iFrame/Vorschau Umgebungen!)
-            document.getElementById('print-msg').classList.remove('hidden');
-
-            // Kurze Verzögerung, dann Druckdialog öffnen
-            setTimeout(() => {
-                try {
-                    window.print();
-                } catch(e) {
-                    console.log("Drucken durch Umgebung blockiert.");
+                const resultDiv = document.getElementById('quiz-result');
+                resultDiv.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (quizStatus.score === 5) {
+                    resultDiv.textContent = `Perfekt! ${quizStatus.score} von 5 Fragen richtig beantwortet.`;
+                    resultDiv.classList.add('bg-green-100', 'text-green-800');
+                } else {
+                    resultDiv.textContent = `Sie haben ${quizStatus.score} von 5 Fragen richtig. Lesen Sie sich die blauen Boxen durch, um die Fehler zu verstehen.`;
+                    resultDiv.classList.add('bg-red-100', 'text-red-800');
                 }
-            }, 500);
-        });
+            });
+
+            // --- 3. Zuverlässiger PDF/Print Export über generiertes Iframe ---
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('de-CH');
+
+            document.getElementById('export-pdf').addEventListener('click', function() {
+                // Inhalte auslesen
+                const cuesText = document.getElementById('input-cues').value.replace(/\n/g, '<br>');
+                const notesText = document.getElementById('input-notes').value.replace(/\n/g, '<br>');
+                const summaryText = document.getElementById('input-summary').value.replace(/\n/g, '<br>');
+
+                // Zusammenstellung des Quiz-Bereichs
+                let quizHtml = '';
+                if (quizStatus.completed) {
+                    quizStatus.details.forEach((q, i) => {
+                        const bgColor = q.isCorrect ? '#f0fdf4' : '#fef2f2';
+                        const borderColor = q.isCorrect ? '#22c55e' : '#ef4444';
+                        const statusText = q.isCorrect ? '<span style="color: #166534; font-weight: bold;">Richtig</span>' : '<span style="color: #991b1b; font-weight: bold;">Falsch</span>';
+                        
+                        quizHtml += `
+                            <div style="background-color: ${bgColor}; border-left: 4px solid ${borderColor}; padding: 12px; margin-bottom: 10px; border-radius: 4px;">
+                                <p style="margin: 0 0 5px 0; font-size: 14px;"><strong>Frage ${i+1}:</strong> ${q.question}</p>
+                                <p style="margin: 0 0 5px 0; font-size: 14px;">Status: ${statusText}</p>
+                                ${!q.isCorrect ? `<div style="margin-top: 8px; font-size: 13px; color: #1e40af; background: white; padding: 8px; border: 1px solid #bfdbfe; border-radius: 4px;">${q.explanationText}</div>` : ''}
+                            </div>
+                        `;
+                    });
+                } else {
+                    quizHtml = `<p style="font-size: 14px; color: #78716c; font-style: italic; margin-bottom: 20px;">Das Quiz wurde vor dem Export nicht überprüft.</p>`;
+                }
+
+                // Komplettes HTML Dokument für den PDF Export generieren
+                const printContent = `
+                    <!DOCTYPE html>
+                    <html lang="de">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Auswertung Demografie Schweiz</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; padding: 20px; max-width: 800px; margin: 0 auto; background: white; }
+                            h1 { font-size: 24px; color: #0f766e; border-bottom: 2px solid #5eead4; padding-bottom: 10px; margin-bottom: 20px; }
+                            h2 { font-size: 18px; color: #0f766e; margin-top: 40px; margin-bottom: 15px; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 10px; page-break-inside: auto; }
+                            tr { page-break-inside: avoid; page-break-after: auto; }
+                            td { border: 1px solid #d1d5db; padding: 15px; vertical-align: top; }
+                            .bg-light { background-color: #f9fafb; }
+                            .label { display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #57534e; font-weight: bold; }
+                            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Lernauswertung: Demografie Schweiz</h1>
+                        <p style="margin-bottom: 30px;"><strong>Erstellungsdatum:</strong> ${new Date().toLocaleDateString('de-CH')}</p>
+
+                        <h2>1. Quiz Resultate (${quizStatus.completed ? quizStatus.score + ' von 5 Punkten' : 'Nicht absolviert'})</h2>
+                        ${quizHtml}
+
+                        <h2>2. Cornell Zusammenfassung</h2>
+                        <table>
+                            <tr>
+                                <td style="width: 35%;" class="bg-light">
+                                    <span class="label">Stichworte / Fragen</span>
+                                    <div style="font-size: 14px;">${cuesText || '<em>Keine Einträge</em>'}</div>
+                                </td>
+                                <td style="width: 65%;">
+                                    <span class="label">Notizen</span>
+                                    <div style="font-size: 14px;">${notesText || '<em>Keine Einträge</em>'}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="bg-light">
+                                    <span class="label">Zusammenfassung</span>
+                                    <div style="font-size: 14px;">${summaryText || '<em>Keine Einträge</em>'}</div>
+                                </td>
+                            </tr>
+                        </table>
+                    </body>
+                    </html>
+                `;
+
+                // Erstelle ein unsichtbares Iframe für den Druckdialog
+                const iframe = document.createElement('iframe');
+                iframe.style.position = 'absolute';
+                iframe.style.width = '0px';
+                iframe.style.height = '0px';
+                iframe.style.border = 'none';
+                document.body.appendChild(iframe);
+
+                const doc = iframe.contentWindow.document;
+                doc.open();
+                doc.write(printContent);
+                doc.close();
+
+                // Druckdialog aufrufen
+                setTimeout(() => {
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                    
+                    // Iframe nach dem Druckvorgang entfernen
+                    setTimeout(() => {
+                        document.body.removeChild(iframe);
+                    }, 2000);
+                }, 500);
+            });
+            
+        }); // Ende DOMContentLoaded
     </script>
 </body>
 </html>
